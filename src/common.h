@@ -1,23 +1,19 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-
 #include <iostream>
 #include <fstream>
 #include <string>
 
 #include <glad/glad.h>
 
-
 //полезный макрос для проверки ошибок
 //в строчке, где он был записан вызывает ThrowExceptionOnGLError, которая при возникновении ошибки opengl
 //пишет в консоль номер текущей строки и название исходного файла
 //а также тип ошибки
-#define GL_CHECK_ERRORS ThrowExceptionOnGLError(__LINE__,__FILE__);
-
+#define GL_CHECK_ERRORS ThrowExceptionOnGLError(__LINE__, __FILE__);
 
 //#define PI 3.1415926535897932384626433832795f
-
 
 static void ThrowExceptionOnGLError(int line, const char *file)
 {
@@ -68,6 +64,5 @@ static void ThrowExceptionOnGLError(int line, const char *file)
 	if (gl_error != GL_NO_ERROR)
 		throw std::runtime_error(errMsg);
 }
-
 
 #endif

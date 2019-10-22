@@ -20,7 +20,6 @@ enum Movement_Direction
 class Camera
 {
 public:
-
   float3 pos;
   float3 front;
   float3 up;
@@ -37,7 +36,7 @@ public:
          float3 a_front = float3(0.0f, 0.0f, -1.0f), GLfloat a_yaw = -90.0f, GLfloat a_pitch = 0.0f,
          GLfloat a_moveSpeed = 3.0f, GLfloat a_mouseSensitivity = 0.1f, GLfloat a_zoom = 45.0f);
 
-  virtual ~Camera() {};
+  virtual ~Camera(){};
 
   float4x4 GetViewMatrix() const;
 
@@ -48,8 +47,6 @@ public:
 private:
   void updateCameraVectors();
   float3 worldUp;
-
 };
-
 
 #endif

@@ -28,13 +28,13 @@ ShaderProgram::ShaderProgram(const std::unordered_map<GLenum, std::string> &inpu
   if (inputShaders.find(GL_TESS_CONTROL_SHADER) != inputShaders.end())
   {
     shaderObjects[GL_TESS_CONTROL_SHADER] = LoadShaderObject(GL_TESS_CONTROL_SHADER,
-      inputShaders.at(GL_TESS_CONTROL_SHADER));
+                                                             inputShaders.at(GL_TESS_CONTROL_SHADER));
     glAttachShader(shaderProgram, shaderObjects[GL_TESS_CONTROL_SHADER]);
   }
   if (inputShaders.find(GL_TESS_EVALUATION_SHADER) != inputShaders.end())
   {
     shaderObjects[GL_TESS_EVALUATION_SHADER] = LoadShaderObject(GL_TESS_EVALUATION_SHADER,
-      inputShaders.at(GL_TESS_EVALUATION_SHADER));
+                                                                inputShaders.at(GL_TESS_EVALUATION_SHADER));
     glAttachShader(shaderProgram, shaderObjects[GL_TESS_EVALUATION_SHADER]);
   }
   if (inputShaders.find(GL_COMPUTE_SHADER) != inputShaders.end())
@@ -47,29 +47,28 @@ ShaderProgram::ShaderProgram(const std::unordered_map<GLenum, std::string> &inpu
 
   GLint linkStatus;
 
-
   glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linkStatus);
   if (linkStatus != GL_TRUE)
   {
     GLchar infoLog[512];
     glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-    std::cerr << "Shader program linking failed\n" << infoLog << std::endl;
+    std::cerr << "Shader program linking failed\n"
+              << infoLog << std::endl;
     shaderProgram = 0;
 
     stringstream ss;
     ss << "{ ";
-    
-    for (auto n : inputShaders) {
-        ss << n.second << " " << std::endl;
+
+    for (auto n : inputShaders)
+    {
+      ss << n.second << " " << std::endl;
     }
 
     ss << " }";
 
     throw std::runtime_error("Failed to link shaders ");
   }
-
 }
-
 
 void ShaderProgram::Release()
 {
@@ -126,7 +125,8 @@ bool ShaderProgram::reLink()
     auto log = new char[logLength];
     glGetProgramInfoLog(this->shaderProgram, logLength, &charsWritten, log);
 
-    std::cerr << "Shader program link error: " << std::endl << log << std::endl;
+    std::cerr << "Shader program link error: " << std::endl
+              << log << std::endl;
 
     delete[] log;
     shaderProgram = 0;
@@ -135,7 +135,6 @@ bool ShaderProgram::reLink()
 
   return true;
 }
-
 
 GLuint ShaderProgram::LoadShaderObject(GLenum type, const std::string &filename)
 {
@@ -168,8 +167,9 @@ GLuint ShaderProgram::LoadShaderObject(GLenum type, const std::string &filename)
 
     glGetShaderInfoLog(newShaderObject, logLength, &charsWritten, log.data());
     std::string out(log.begin(), log.end());
-    std::cerr << "Shader " << filename << " compilation failed : " << std::endl << out << std::endl;
-    
+    std::cerr << "Shader " << filename << " compilation failed : " << std::endl
+              << out << std::endl;
+
     throw std::runtime_error("Failed to compile shaders");
 
     return 0;
@@ -190,14 +190,16 @@ void ShaderProgram::StopUseShader() const
 
 void ShaderProgram::SetUniform(const std::string &location, const float4x4 &value) const
 {
-  GLint uniformLocation = glGetUniformLocation(shaderProgram, location.c_str()); GL_CHECK_ERRORS;
+  GLint uniformLocation = glGetUniformLocation(shaderProgram, location.c_str());
+  GL_CHECK_ERRORS;
   if (uniformLocation == -1)
   {
     std::cerr << "Uniform  " << location << " not found" << std::endl;
     return;
   }
 
-  glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, value.L()); GL_CHECK_ERRORS;
+  glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, value.L());
+  GL_CHECK_ERRORS;
 }
 
 void ShaderProgram::SetUniform(const std::string &location, int value) const
@@ -252,7 +254,7 @@ void ShaderProgram::SetUniform(const std::string &location, const float4 &value)
     std::cerr << "Uniform  " << location << " not found" << std::endl;
     return;
   }
-  float val[] = { value.x, value.y, value.z, value.w };
+  float val[] = {value.x, value.y, value.z, value.w};
   glUniform4fv(uniformLocation, 1, val);
 }
 
@@ -264,7 +266,7 @@ void ShaderProgram::SetUniform(const std::string &location, const float3 &value)
     std::cerr << "Uniform  " << location << " not found" << std::endl;
     return;
   }
-  float val[] = { value.x, value.y, value.z };
+  float val[] = {value.x, value.y, value.z};
   glUniform3fv(uniformLocation, 1, val);
 }
 
@@ -276,6 +278,6 @@ void ShaderProgram::SetUniform(const std::string &location, const float2 &value)
     std::cerr << "Uniform  " << location << " not found" << std::endl;
     return;
   }
-  float val[] = { value.x, value.y };
+  float val[] = {value.x, value.y};
   glUniform2fv(uniformLocation, 1, val);
 }

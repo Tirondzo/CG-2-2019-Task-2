@@ -13,7 +13,7 @@
 #undef max
 #endif
 
-namespace LiteMath 
+namespace LiteMath
 {
 
   struct float2
@@ -598,7 +598,7 @@ namespace LiteMath
      matrix[14] = (-temp * zfar) / temp4;
      matrix[15] = 0.0;
    }
-   
+
    static inline float4x4 projectionMatrixTransposed(float fovy, float aspect, float zNear, float zFar)
    {
      float4x4 res;
@@ -640,12 +640,12 @@ namespace LiteMath
     const float g = real_color.y*255.0f;
     const float b = real_color.z*255.0f;
     const float a = real_color.w*255.0f;
-  
+
     const unsigned char red = (unsigned char)r;
     const unsigned char green = (unsigned char)g;
     const unsigned char blue = (unsigned char)b;
     const unsigned char alpha = (unsigned char)a;
-  
+
     return blue | (green << 8) | (red << 16) | (alpha << 24);
   }
 
@@ -655,15 +655,15 @@ namespace LiteMath
     const float g = real_color.y*255.0f;
     const float b = real_color.z*255.0f;
     const float a = real_color.w*255.0f;
-  
+
     const unsigned char red   = (unsigned char)r;
     const unsigned char green = (unsigned char)g;
     const unsigned char blue  = (unsigned char)b;
     const unsigned char alpha = (unsigned char)a;
-  
+
     return red | (green << 8) | (blue << 16) | (alpha << 24);
   }
 
   static constexpr float DEG_TO_RAD = 3.1415926535897932384626433832795f / 180.0f;
- 
-}; // namespace LiteMath 
+
+}; // namespace LiteMath

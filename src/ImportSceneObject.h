@@ -10,18 +10,20 @@
 #include <map>
 
 using std::map;
-using std::vector;
 using std::unique_ptr;
+using std::vector;
 
 using namespace tinyxml2;
 
 using std::string;
 
-struct Material {
+struct Material
+{
     GLuint tex_id;
 };
 
-enum ErrCodes {
+enum ErrCodes
+{
     FAILED_TO_LOAD
 };
 

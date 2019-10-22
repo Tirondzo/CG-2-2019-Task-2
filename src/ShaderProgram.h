@@ -10,12 +10,11 @@ using namespace LiteMath;
 class ShaderProgram
 {
 public:
-
-  ShaderProgram() : shaderProgram(-1) {};
+  ShaderProgram() : shaderProgram(-1){};
 
   ShaderProgram(const std::unordered_map<GLenum, std::string> &inputShaders);
 
-  virtual ~ShaderProgram() {};
+  virtual ~ShaderProgram(){};
 
   void Release(); //actual destructor
 
@@ -24,7 +23,6 @@ public:
   virtual void StopUseShader() const;
 
   GLuint GetProgram() const { return shaderProgram; }
-
 
   bool reLink();
 
@@ -50,6 +48,5 @@ private:
   GLuint shaderProgram;
   std::unordered_map<GLenum, GLuint> shaderObjects;
 };
-
 
 #endif

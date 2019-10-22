@@ -10,8 +10,8 @@ void DrawSimpleTriangle(ShaderProgram &debug_program,
                         uint32_t height);
 
 void DrawMesh(ShaderProgram &program,
-    Camera &camera,
-    std::unique_ptr<Mesh> &mesh,
-    uint32_t width,
-    uint32_t height,
-    float deltaTime);
+              Camera &camera,
+              std::unique_ptr<Mesh> &mesh,
+              uint32_t width,
+              uint32_t height,
+              float deltaTime);

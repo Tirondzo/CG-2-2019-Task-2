@@ -1,4 +1,3 @@
-#define GLFW_DLL
 #include <GLFW/glfw3.h>
 #include "Game.h"
 
@@ -68,25 +67,29 @@ GameWindow::GameWindow(int width, int height, const char *title, bool resizable,
   std::cout << std::setw(11) << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
   std::cout << std::setw(11) << "Version: "  << glGetString(GL_VERSION) << std::endl;
   std::cout << std::setw(11) << "GLSL: "     << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-  std::cout << std::setw(11) << "WindowSize" << window_width << 'x' << window_height;
-  std::cout << std::setw(11) << "ViewSize"   << fb_width << 'x' << fb_height;
+  std::cout << std::setw(11) << "WindowSize" << window_width << 'x' << window_height << std::endl;
+  std::cout << std::setw(11) << "ViewSize"   << fb_width << 'x' << fb_height << std::endl;
 
   state.gameTime = state.prev.gameTime = -1;
 }
 
-void GameWindow::keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
+GameWindow *current = NULL;
+GLFWkeyfun prevKeyboardCallback = NULL;
+GLFWmousebuttonfun prevMouseButtonCallback = NULL;
+
+void keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
-  if (key != GLFW_KEY_UNKNOWN)
-    state.keyboard[key] = (action == GLFW_PRESS);
+  if (current && key != GLFW_KEY_UNKNOWN)
+    current->state.keyboard[key] = (action == GLFW_PRESS);
 
   if (prevKeyboardCallback != NULL)
     prevKeyboardCallback(window, key, scancode, action, mode);
 }
 
-void GameWindow::mouseButtonCallback(GLFWwindow *window, int key, int action, int mods)
+void mouseButtonCallback(GLFWwindow *window, int key, int action, int mods)
 {
-  if (key != GLFW_KEY_UNKNOWN)
-    state.mouse[key] = (action == GLFW_PRESS);
+  if (current && key != GLFW_KEY_UNKNOWN)
+    current->state.mouse[key] = (action == GLFW_PRESS);
 
   if (prevMouseButtonCallback != NULL)
     prevMouseButtonCallback(window, key, action, mods);
@@ -99,11 +102,13 @@ void GameWindow::update()
   state.gameTime = glfwGetTime();
   glfwGetCursorPos(window, &state.mouseX, &state.mouseY);
 
-  prevKeyboardCallback = glfwSetKeyCallback(window, this->keyboardCallback);
-  prevMouseButtonCallback = glfwSetMouseButtonCallback(window, this->mouseButtonCallback);
+  current = this;
+  prevKeyboardCallback = glfwSetKeyCallback(window, keyboardCallback);
+  prevMouseButtonCallback = glfwSetMouseButtonCallback(window, mouseButtonCallback);
   glfwPollEvents();
   glfwSetKeyCallback(window, prevKeyboardCallback);
   glfwSetMouseButtonCallback(window, prevMouseButtonCallback);
+  current = NULL;
 
   state.cursorCaptured = (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
 

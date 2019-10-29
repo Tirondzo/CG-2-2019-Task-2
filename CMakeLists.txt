@@ -83,7 +83,10 @@ find_package(OpenGL REQUIRED)
 add_executable(main ${SOURCE_FILES})
 target_include_directories(main PRIVATE ${OPENGL_INCLUDE_DIR} ${ADDITIONAL_INCLUDE_DIRS})
 
+set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DGLFW_INCLUDE_NONE")
+
 if(WIN32)
+  set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DGLFW_DLL")
   add_custom_command(TARGET main POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/dependencies/bin" $<TARGET_FILE_DIR:main>)
   #set(CMAKE_MSVCIDE_RUN_PATH ${ADDITIONAL_RUNTIME_LIBRARY_DIRS})
   target_compile_options(main PRIVATE)

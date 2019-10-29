@@ -1,6 +1,6 @@
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+#pragma once
 
+#include <glad/glad.h>
 #include <unordered_map>
 
 #include <LiteMath.h>
@@ -47,5 +47,3 @@ private:
   GLuint shaderProgram;
   std::unordered_map<GLenum, GLuint> shaderObjects;
 };
-
-#endif

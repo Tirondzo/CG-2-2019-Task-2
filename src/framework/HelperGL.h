@@ -1,5 +1,4 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -66,5 +65,3 @@ static void ThrowExceptionOnGLError(int line, const char *file)
 	if (gl_error != GL_NO_ERROR)
 		throw std::runtime_error(errMsg);
 }
-
-#endif

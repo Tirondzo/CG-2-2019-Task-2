@@ -1,5 +1,3 @@
-#ifndef CAMERA_H
-#define CAMERA_H
 #pragma once
 
 #include "Game.h"
@@ -41,5 +39,3 @@ public:
 // Camera based on quaternions.
 // It solves a lot of problems such as Gimbal Lock and animations.
 // class QuaternionCamera : Camera {};
-
-#endif

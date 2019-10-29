@@ -1,4 +1,5 @@
-#include <glad/glad.h>
+#pragma once
+
 #include <GLFW/glfw3.h>
 
 #include <LiteMath.h>
@@ -30,19 +31,16 @@ class GameWindow
     int fb_width, fb_height; // framebuffer size
     GLFWwindow *window;
     GameState state;
-
-    GLFWkeyfun prevKeyboardCallback;
-    void keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
-    GLFWmousebuttonfun prevMouseButtonCallback;
-    void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
+    friend void keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
+    friend void mouseButtonCallback(GLFWwindow *window, int key, int action, int mods);
 public:
     GameWindow(int width, int height, const char *title, bool resizable = false,
                int gl_major_v = 3, int gl_minor_v = 3);
 
     int getWindowWidth() const { return window_width; };
     int getWindowHeight() const { return window_height; };
-    int getViewSize() const { return fb_width; };
-    int getViewSize() const { return fb_height; };
+    int getViewWidth() const { return fb_width; };
+    int getViewHeight() const { return fb_height; };
 
     GLFWwindow* get() const { return window; }
 

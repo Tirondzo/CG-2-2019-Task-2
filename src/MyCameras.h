@@ -1,3 +1,5 @@
+#pragma once
+
 #include "framework/Camera.h"
 
 // Game cameras:

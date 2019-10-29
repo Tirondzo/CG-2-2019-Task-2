@@ -7,6 +7,7 @@ using namespace LiteMath;
 struct GameStateCurrent
 {
     double mouseX, mouseY;
+    bool cursorCaptured;
     bool keyboard[GLFW_KEY_LAST+1];
     bool mouse[GLFW_MOUSE_BUTTON_LAST+1];
     double gameTime;

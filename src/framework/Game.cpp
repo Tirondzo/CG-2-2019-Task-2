@@ -105,6 +105,8 @@ void GameWindow::update()
   glfwSetKeyCallback(window, prevKeyboardCallback);
   glfwSetMouseButtonCallback(window, prevMouseButtonCallback);
 
+  state.cursorCaptured = (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
+
   // If the 1st frame
   if (state.prev.gameTime < 0)
     state.prev = state;

@@ -1,52 +1,50 @@
 #ifndef CAMERA_H
 #define CAMERA_H
+#pragma once
 
-///////////////////////
-// Camera class based on samples from learnopengl.com
+#include "Game.h"
 
-#include "common.h"
-
-#include "LiteMath.h"
+#include <LiteMath.h>
 using namespace LiteMath;
 
-enum Movement_Direction
-{
-  FORWARD,
-  BACKWARD,
-  LEFT,
-  RIGHT
-};
-
+// Camera Interface
 class Camera
 {
-public:
+protected:
+  float3 world_up, world_right, world_front;
   float3 pos;
-  float3 front;
-  float3 up;
-  float3 right;
+  float4x4 viewMatrix;
+public:
+  Camera(float3 world_up, float3 world_right, float3 world_front);
 
-  GLfloat yaw;
-  GLfloat pitch;
+  float3 getPos() const { return pos; }
+  Camera& setPos(float3 val) { pos = val; return *this; }
 
-  GLfloat moveSpeed;
-  GLfloat mouseSensitivity;
-  GLfloat zoom;
+  virtual Camera& rotateYPR(float yaw, float pitch, float roll) = 0;
+  Camera& rotateYPR(float3 ypr) { return this->rotateYPR(ypr.x, ypr.y, ypr.z); }
 
-  Camera(float3 a_pos = float3(0.0f, 0.0f, 0.0f), float3 a_up = float3(0.0f, 1.0f, 0.0f),
-         float3 a_front = float3(0.0f, 0.0f, -1.0f), GLfloat a_yaw = -90.0f, GLfloat a_pitch = 0.0f,
-         GLfloat a_moveSpeed = 3.0f, GLfloat a_mouseSensitivity = 0.1f, GLfloat a_zoom = 45.0f);
-
-  virtual ~Camera(){};
-
-  float4x4 GetViewMatrix() const;
-
-  void ProcessKeyboard(Movement_Direction dir, GLfloat deltaTime);
-  void ProcessMouseMove(GLfloat deltaX, GLfloat deltaY, GLboolean limitPitch = true);
-  void ProcessMouseScroll(GLfloat deltaY);
-
-private:
-  void updateCameraVectors();
-  float3 worldUp;
+  virtual float4x4 getViewMatrix() const = 0;
+  virtual void update(GameState gs) {};
 };
+
+// Simpliest camera based on Yaw Pitch Roll angles
+class GimbalCamera : Camera{
+protected:
+  float3 yaw_pitch_roll;
+public:
+  Camera& rotateYPR(float yaw, float pitch, float roll) override;
+  float4x4 getViewMatrix() const override { return viewMatrix; };
+
+  float3 getYPR() const { return yaw_pitch_roll; };
+};
+
+// Camera based on quaternions.
+// It solves a lot of problems such as Gimbal Lock and animations.
+// class QuaternionCamera : Camera {};
+
+// Realisations:
+
+class FreeCamera : GimbalCamera {};
+class TankCamera : GimbalCamera {};
 
 #endif

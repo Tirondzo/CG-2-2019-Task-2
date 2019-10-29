@@ -51,7 +51,7 @@ Mesh::Mesh(const vector<float> &positions,
   GL_CHECK_ERRORS;
   {
 
-    //�������� � ��������� ��������� ������� ��������� ������
+    //передаем в шейдерную программу атрибут координат вершин
     glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
     GL_CHECK_ERRORS;
     glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(GL_FLOAT), positions.data(), GL_STATIC_DRAW);
@@ -61,7 +61,7 @@ Mesh::Mesh(const vector<float> &positions,
     glEnableVertexAttribArray(0);
     GL_CHECK_ERRORS;
 
-    //�������� � ��������� ��������� ������� ��������
+    //передаем в шейдерную программу атрибут нормалей
     glBindBuffer(GL_ARRAY_BUFFER, vboNormals);
     GL_CHECK_ERRORS;
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GL_FLOAT), normals.data(), GL_STATIC_DRAW);
@@ -71,7 +71,7 @@ Mesh::Mesh(const vector<float> &positions,
     glEnableVertexAttribArray(1);
     GL_CHECK_ERRORS;
 
-    //�������� � ��������� ��������� ������� ���������� ���������
+    //передаем в шейдерную программу атрибут текстурных координат
     glBindBuffer(GL_ARRAY_BUFFER, vboTexCoords);
     GL_CHECK_ERRORS;
     glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(GL_FLOAT), texcoords.data(), GL_STATIC_DRAW);
@@ -81,7 +81,7 @@ Mesh::Mesh(const vector<float> &positions,
     glEnableVertexAttribArray(2);
     GL_CHECK_ERRORS;
 
-    //�������� � ��������� ��������� �������
+    //передаем в шейдерную программу индексы
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
     GL_CHECK_ERRORS;
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);

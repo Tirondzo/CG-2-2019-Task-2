@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LiteMath.h"
+#include <LiteMath.h>
 
 #include <vector>
 #include <string>

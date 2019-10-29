@@ -42,7 +42,7 @@ public:
 // It solves a lot of problems such as Gimbal Lock and animations.
 // class QuaternionCamera : Camera {};
 
-// Realisations:
+// Game cameras:
 
 class FreeCamera : GimbalCamera {};
 class TankCamera : GimbalCamera {};

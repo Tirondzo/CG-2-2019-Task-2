@@ -1,6 +1,7 @@
-#include "mesh.h"
+#include "Mesh.h"
+#include "HelperGL.h"
 
-Mesh *CreateSimpleTriangleMesh()
+Mesh *CreateSimpleTriangleMesh(string name)
 {
   vector<float> pos{
       -1, 1, -0.5, 1,
@@ -20,15 +21,10 @@ Mesh *CreateSimpleTriangleMesh()
   vector<uint32_t> ind{
       0, 1, 2};
 
-  return new Mesh(pos, norm, texc, ind, -1, "SimpleTriangle");
+  return new Mesh(pos, norm, texc, ind, -1, name);
 }
 
-void DrawTriangle()
-{
-  static std::unique_ptr<Mesh> mesh(CreateSimpleTriangleMesh());
 
-  mesh->Draw();
-}
 
 Mesh::Mesh(const vector<float> &positions,
            const vector<float> &normals,
@@ -41,74 +37,52 @@ Mesh::Mesh(const vector<float> &positions,
 
   ind_num = indices.size();
 
-  glGenVertexArrays(1, &vao);
-  glGenBuffers(1, &vboVertices);
-  glGenBuffers(1, &vboIndices);
-  glGenBuffers(1, &vboNormals);
-  glGenBuffers(1, &vboTexCoords);
+  GL_CHECK( glGenVertexArrays(1, &vao) );
+  GL_CHECK( glGenBuffers(1, &vboVertices) );
+  GL_CHECK( glGenBuffers(1, &vboIndices) );
+  GL_CHECK( glGenBuffers(1, &vboNormals) );
+  GL_CHECK( glGenBuffers(1, &vboTexCoords) );
 
-  glBindVertexArray(vao);
-  GL_CHECK_ERRORS;
+  GL_CHECK( glBindVertexArray(vao) );
   {
-
     //передаем в шейдерную программу атрибут координат вершин
-    glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
-    GL_CHECK_ERRORS;
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(GL_FLOAT), positions.data(), GL_STATIC_DRAW);
-    GL_CHECK_ERRORS;
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid *)0);
-    GL_CHECK_ERRORS;
-    glEnableVertexAttribArray(0);
-    GL_CHECK_ERRORS;
+    GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, vboVertices) );
+    GL_CHECK( glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(GL_FLOAT), positions.data(), GL_STATIC_DRAW) );
+    GL_CHECK( glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid *)0) );
+    GL_CHECK( glEnableVertexAttribArray(0) );
 
     //передаем в шейдерную программу атрибут нормалей
-    glBindBuffer(GL_ARRAY_BUFFER, vboNormals);
-    GL_CHECK_ERRORS;
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GL_FLOAT), normals.data(), GL_STATIC_DRAW);
-    GL_CHECK_ERRORS;
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid *)0);
-    GL_CHECK_ERRORS;
-    glEnableVertexAttribArray(1);
-    GL_CHECK_ERRORS;
+    GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, vboNormals) );
+    GL_CHECK( glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GL_FLOAT), normals.data(), GL_STATIC_DRAW) );
+    GL_CHECK( glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid *)0) );
+    GL_CHECK( glEnableVertexAttribArray(1) );
 
     //передаем в шейдерную программу атрибут текстурных координат
-    glBindBuffer(GL_ARRAY_BUFFER, vboTexCoords);
-    GL_CHECK_ERRORS;
-    glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(GL_FLOAT), texcoords.data(), GL_STATIC_DRAW);
-    GL_CHECK_ERRORS;
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT), (GLvoid *)0);
-    GL_CHECK_ERRORS;
-    glEnableVertexAttribArray(2);
-    GL_CHECK_ERRORS;
+    GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, vboTexCoords) );
+    GL_CHECK( glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(GL_FLOAT), texcoords.data(), GL_STATIC_DRAW) );
+    GL_CHECK( glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT), (GLvoid *)0) );
+    GL_CHECK( glEnableVertexAttribArray(2) );
 
     //передаем в шейдерную программу индексы
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
-    GL_CHECK_ERRORS;
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
-    GL_CHECK_ERRORS;
+    GL_CHECK( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices) );
+    GL_CHECK( glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW) );
   }
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  GL_CHECK_ERRORS;
-
-  glBindVertexArray(0);
-  GL_CHECK_ERRORS;
+  GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, 0) );
+  GL_CHECK( glBindVertexArray(0) );
 
   material_id = mat_id;
 }
 
-string Mesh::GetName()
+string Mesh::getName()
 {
   return name;
 }
 
-void Mesh::Draw()
+void Mesh::draw()
 {
-  glBindVertexArray(vao);
-  GL_CHECK_ERRORS;
-  glDrawElements(GL_TRIANGLES, ind_num, GL_UNSIGNED_INT, nullptr);
-  GL_CHECK_ERRORS;
-  glBindVertexArray(0);
-  GL_CHECK_ERRORS;
+  GL_CHECK( glBindVertexArray(vao) );
+  GL_CHECK( glDrawElements(GL_TRIANGLES, ind_num, GL_UNSIGNED_INT, nullptr) );
+  GL_CHECK( glBindVertexArray(0) );
 }
 
 Mesh::~Mesh()

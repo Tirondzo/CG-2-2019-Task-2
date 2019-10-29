@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common.h"
 #include "LiteMath.h"
 
 #include <vector>
@@ -10,10 +9,15 @@ using LiteMath::float4x4;
 using std::string;
 using std::vector;
 
-void DrawTriangle();
+Mesh* CreateSimpleTriangleMesh(string name = "SimpleTriangle");
 
 class Mesh
 {
+protected:
+  string name;
+  GLuint vboVertices, vboIndices, vboNormals, vboTexCoords, vao;
+  size_t ind_num;
+
 public:
   float4x4 model;
   uint32_t material_id;
@@ -25,14 +29,9 @@ public:
        size_t mat_id,
        string n);
 
-  string GetName();
+  string getName();
 
-  void Draw();
+  void draw();
 
   ~Mesh();
-
-protected:
-  string name;
-  GLuint vboVertices, vboIndices, vboNormals, vboTexCoords, vao;
-  size_t ind_num;
 };

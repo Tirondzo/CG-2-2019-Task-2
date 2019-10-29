@@ -1,4 +1,5 @@
 #include "ShaderProgram.h"
+#include "HelperGL.h"
 
 #include <sstream>
 

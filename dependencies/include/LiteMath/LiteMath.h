@@ -1,3 +1,6 @@
+// https://github.com/Ray-Tracing-Systems/HydraAPI/blob/master2/hydra_api/LiteMath.h
+// © Copyright 2017 Vladimir Frolov, Ray Tracing Systems
+
 #pragma once
 
 #include <math.h>

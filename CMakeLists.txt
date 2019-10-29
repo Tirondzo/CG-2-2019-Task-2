@@ -39,6 +39,7 @@ file(GLOB_RECURSE ASSETS_FILES RELATIVE "${PROJECT_SOURCE_DIR}" CONFIGURE_DEPEND
 
 set(ADDITIONAL_INCLUDE_DIRS
       dependencies/include/GLAD
+      dependencies/include/LiteMath
       dependencies/include/
 )
 set(ADDITIONAL_LIBRARY_DIRS dependencies/lib)
@@ -47,9 +48,10 @@ set(ADDITIONAL_RUNTIME_LIBRARY_DIRS dependencies/bin)
 
 # Compile additional libraries from sources
 
-set(COMPILED_LIBRARIES Hydra TinyXML2)
+set(COMPILED_LIBRARIES Hydra TinyXML2 GLAD)
 add_subdirectory(dependencies/include/Hydra)
 add_subdirectory(dependencies/include/TinyXML2)
+add_subdirectory(dependencies/include/GLAD)
 
 if(WIN32)
   link_directories(${ADDITIONAL_LIBRARY_DIRS})

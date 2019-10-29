@@ -45,25 +45,25 @@ Mesh::Mesh(const vector<float> &positions,
 
   GL_CHECK( glBindVertexArray(vao) );
   {
-    //передаем в шейдерную программу атрибут координат вершин
+    // Pass Vertex's Positions to shader
     GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, vboVertices) );
     GL_CHECK( glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(GL_FLOAT), positions.data(), GL_STATIC_DRAW) );
     GL_CHECK( glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid *)0) );
     GL_CHECK( glEnableVertexAttribArray(0) );
 
-    //передаем в шейдерную программу атрибут нормалей
+    // Pass Vertex's Normals to shader
     GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, vboNormals) );
     GL_CHECK( glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GL_FLOAT), normals.data(), GL_STATIC_DRAW) );
     GL_CHECK( glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid *)0) );
     GL_CHECK( glEnableVertexAttribArray(1) );
 
-    //передаем в шейдерную программу атрибут текстурных координат
+    // Pass Vertex's Texture Coordinates to shader
     GL_CHECK( glBindBuffer(GL_ARRAY_BUFFER, vboTexCoords) );
     GL_CHECK( glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(GL_FLOAT), texcoords.data(), GL_STATIC_DRAW) );
     GL_CHECK( glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT), (GLvoid *)0) );
     GL_CHECK( glEnableVertexAttribArray(2) );
 
-    //передаем в шейдерную программу индексы
+    // Pass Indexes to shader
     GL_CHECK( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices) );
     GL_CHECK( glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW) );
   }
@@ -87,5 +87,5 @@ void Mesh::draw()
 
 Mesh::~Mesh()
 {
-  glDeleteVertexArrays(1, &vao);
+  GL_CHECK( glDeleteVertexArrays(1, &vao) );
 }

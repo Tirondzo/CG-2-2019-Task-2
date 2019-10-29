@@ -81,6 +81,10 @@ namespace LiteMath
     const float* L() const { return (float*)row; }
 
     float4 row[4];
+    float4 get_row(int i) const { return row[i]; }
+    void set_row(int i, float4 r) { row[i] = r; }
+    float4 get_col(int j) const { return float4(M(j,0),M(j,1),M(j,2),M(j,3)); }
+    void set_col(int j, float4 c) { M(j,0) = c.x; M(j,1) = c.y; M(j,2) = c.z; M(j,3) = c.w; }
   };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////

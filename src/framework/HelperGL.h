@@ -1,5 +1,4 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -7,11 +6,14 @@
 
 #include <glad/glad.h>
 
-//полезный макрос для проверки ошибок
-//в строчке, где он был записан вызывает ThrowExceptionOnGLError, которая при возникновении ошибки opengl
-//пишет в консоль номер текущей строки и название исходного файла
-//а также тип ошибки
+// OpenGL 4.3 and later support the glDebugMessageCallback API
+// This is some sort of implementation on this API
+
+// Useful error checking macros
+// In the line where it was used throws ThrowExceptionOnGLError if opengl error occurred
+// Writes line number, file name and error code in the console
 #define GL_CHECK_ERRORS ThrowExceptionOnGLError(__LINE__, __FILE__);
+#define GL_CHECK(_call) do{_call; GL_CHECK_ERRORS;}while(0);
 
 //#define PI 3.1415926535897932384626433832795f
 
@@ -20,8 +22,7 @@ static void ThrowExceptionOnGLError(int line, const char *file)
 
 	static char errMsg[512];
 
-	//вызывается функция glGetError, проверяющая не произошла ли ошибка
-	//в каком-то вызове opengl и если произошла, то какой код у ошибки
+	// Check opengl for error occurrence, get error code
 	GLenum gl_error = glGetError();
 
 	if (gl_error == GL_NO_ERROR)
@@ -64,5 +65,3 @@ static void ThrowExceptionOnGLError(int line, const char *file)
 	if (gl_error != GL_NO_ERROR)
 		throw std::runtime_error(errMsg);
 }
-
-#endif

@@ -7,7 +7,8 @@ using namespace LiteMath;
 struct GameStateCurrent
 {
     double mouseX, mouseY;
-    bool keys[GLFW_KEY_LAST+1];
+    bool keyboard[GLFW_KEY_LAST+1];
+    bool mouse[GLFW_MOUSE_BUTTON_LAST+1];
     double gameTime;
 };
 
@@ -29,8 +30,10 @@ class GameWindow
     GLFWwindow *window;
     GameState state;
 
-    GLFWkeyfun prevCallback;
+    GLFWkeyfun prevKeyboardCallback;
     void keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
+    GLFWmousebuttonfun prevMouseButtonCallback;
+    void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
 public:
     GameWindow(int width, int height, const char *title, bool resizable = false,
                int gl_major_v = 3, int gl_minor_v = 3);

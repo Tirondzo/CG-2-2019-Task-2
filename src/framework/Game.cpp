@@ -77,10 +77,19 @@ GameWindow::GameWindow(int width, int height, const char *title, bool resizable,
 void GameWindow::keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
   if (key != GLFW_KEY_UNKNOWN)
-    state.keys[key] = (action == GLFW_PRESS);
+    state.keyboard[key] = (action == GLFW_PRESS);
 
-  if (prevCallback != NULL)
-    prevCallback(window, key, scancode, action, mode);
+  if (prevKeyboardCallback != NULL)
+    prevKeyboardCallback(window, key, scancode, action, mode);
+}
+
+void GameWindow::mouseButtonCallback(GLFWwindow *window, int key, int action, int mods)
+{
+  if (key != GLFW_KEY_UNKNOWN)
+    state.mouse[key] = (action == GLFW_PRESS);
+
+  if (prevMouseButtonCallback != NULL)
+    prevMouseButtonCallback(window, key, action, mods);
 }
 
 void GameWindow::update()
@@ -90,9 +99,11 @@ void GameWindow::update()
   state.gameTime = glfwGetTime();
   glfwGetCursorPos(window, &state.mouseX, &state.mouseY);
 
-  prevCallback = glfwSetKeyCallback(window, this->keyboardCallback);
+  prevKeyboardCallback = glfwSetKeyCallback(window, this->keyboardCallback);
+  prevMouseButtonCallback = glfwSetMouseButtonCallback(window, this->mouseButtonCallback);
   glfwPollEvents();
-  glfwSetKeyCallback(window, prevCallback);
+  glfwSetKeyCallback(window, prevKeyboardCallback);
+  glfwSetMouseButtonCallback(window, prevMouseButtonCallback);
 
   // If the 1st frame
   if (state.prev.gameTime < 0)

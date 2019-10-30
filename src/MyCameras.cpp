@@ -1,6 +1,6 @@
 #include "MyCameras.h"
 
-void FreeCamera::update(GameState gs)
+void FreeCamera::update(const GameState &gs)
 {
   // We do camera movements if only cursor captured
   // We also check previous state to prevent "camera jump" when we back into app

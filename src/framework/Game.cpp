@@ -13,6 +13,7 @@ void throwGLFWError()
   //int code = glfwGetError(&description);
   //if (description) std::cout << "GLFW Error: " << description << std::endl;
   glfwTerminate();
+  throw "GLFW Exception";
 }
 
 GameWindow::GameWindow(int width, int height, const char *title, bool resizable,

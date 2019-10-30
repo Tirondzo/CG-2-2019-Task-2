@@ -87,5 +87,6 @@ void Mesh::draw()
 
 Mesh::~Mesh()
 {
-  GL_CHECK( glDeleteVertexArrays(1, &vao) );
+  if (vao)
+    GL_CHECK( glDeleteVertexArrays(1, &vao) );
 }

@@ -9,6 +9,6 @@ public:
 
 int main()
 {
-  MyGameScopeGuard();
+  MyGameScopeGuard scope = MyGameScopeGuard();
   get_my_game()->start();
 }

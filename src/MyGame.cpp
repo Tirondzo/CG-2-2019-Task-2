@@ -17,6 +17,7 @@ MyGame::MyGame()
   }); GL_CHECK_ERRORS;
 
   projection = projectionMatrixTransposed(90.0, gw->getViewWidth()/gw->getViewHeight(), 0.1, 1000.0);
+  projection = transpose(projection);
 
   // Init all resources at cetera...
 }
@@ -30,19 +31,6 @@ MyGame::~MyGame()
   delete tri_sh;
 }
 
-void MyGame::update(const GameState &gs)
-{
-  glClearColor(0.1f, 0.6f, 0.8f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  fc->update(gs);
-  tri_sh->StartUseShader();
-  tri_sh->SetUniform("projection", projection);
-  tri_sh->SetUniform("view", fc->getViewMatrix());
-  triangle->draw();
-  tri_sh->StopUseShader();
-}
-
 void MyGame::start()
 {
 
@@ -53,8 +41,45 @@ void MyGame::start()
   {
     gw->update();
     update(gw->getState());
+
+    draw(gw->getState());
     glfwSwapBuffers(gw->get());
   }
+}
+
+bool key_released(const GameState &gs, int key)
+{
+  // key not pressed for now but was pressed in prev frame
+  return !gs.keyboard[key] && gs.prev.keyboard[key];
+}
+
+bool mbtn_released(const GameState &gs, int key)
+{
+  return !gs.mouse[key] && gs.prev.mouse[key];
+}
+
+void MyGame::update(const GameState &gs)
+{
+  if (key_released(gs, GLFW_KEY_ESCAPE))
+    glfwSetWindowShouldClose(gw->get(), GL_TRUE);
+
+  if (mbtn_released(gs, GLFW_MOUSE_BUTTON_RIGHT))
+    glfwSetInputMode(gw->get(), GLFW_CURSOR,
+                     gs.cursorCaptured ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+
+  fc->update(gs);
+}
+
+void MyGame::draw(const GameState &gs)
+{
+  glClearColor(0.1f, 0.6f, 0.8f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  tri_sh->StartUseShader();
+  tri_sh->SetUniform("projection", projection);
+  tri_sh->SetUniform("view", fc->getViewMatrix());
+  triangle->draw();
+  tri_sh->StopUseShader();
 }
 
 

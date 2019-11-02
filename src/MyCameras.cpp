@@ -11,6 +11,7 @@ void FreeCamera::update(const GameState &gs)
   double dpitch = gs.mouseY - gs.prev.mouseY;
   const double sensitive = 0.0125;
 
+  float3 pos = this->getPos();
   this->rotateYPR(float3(dyaw, dpitch, 0.0f) * sensitive);
 
   double deltaTime = gs.gameTime - gs.prev.gameTime;
@@ -20,20 +21,26 @@ void FreeCamera::update(const GameState &gs)
   int dright = gs.keyboard[GLFW_KEY_D] - gs.keyboard[GLFW_KEY_A];
   int dup    = gs.keyboard[GLFW_KEY_E] - gs.keyboard[GLFW_KEY_C];
   int dup_w  = gs.keyboard[GLFW_KEY_Q] - gs.keyboard[GLFW_KEY_Z];
-  float4x4 viewMatrix = this->viewMatrix;
 
-  // Why we use viewMatrix columns?
-  // Let's find out. For example we want to get camera front vector.
-  // So how to get it? Let's take world front vector, apply view matrix and get the result
-  // Ok. viewMatrix * [1,0,0,0] ... so it is viewMatrix.col(0)
+  // Why we use viewMatrix rows?
+  // https://www.3dgep.com/understanding-the-view-matrix/#FPS_Camera
+  // Our view matrix is (TR)^-1 where T is translation and R is rotation.
+  // View matrix is used to transform from world-space to view-space.
+  // We need to calculate world-space deltaPos from view-space deltas.
+  // So how to get it? Let's take world right vector, apply inv(view) matrix and get the result
+  // Ok. (viewMatrix)^-1 * [1,0,0,0] = transpose(viewMatrix) * [1,0,0,0] ... so it is viewMatrix.row(0)
+  // Why transpose when we need inverse? Because it is orthonormal!
   float3 deltaPos = to_float3(
-                    dfront * this->viewMatrix.get_col(0) +
-                    dright * this->viewMatrix.get_col(1) +
-                    dup    * this->viewMatrix.get_col(2)) +
-                    dup_w  * this->world_up;
+                    dfront * -this->viewMatrix.get_row(2) +
+                    dright * this->viewMatrix.get_row(0) +
+                    dup    * this->viewMatrix.get_row(1)) +
+                    dup_w  * this->world_up; // up in world coordinates
+  // With translation part:
+  // (R|T) inverse is (tr(R)|-T)
+  // (0|1)            (    0|1 )
 
   // We need deltaTime for fps independence
   deltaPos *= speed * deltaTime;
 
-  this->setPos(getPos() + deltaPos);
+  this->setPos(pos + deltaPos);
 }

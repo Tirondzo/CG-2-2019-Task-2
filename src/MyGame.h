@@ -16,6 +16,7 @@ class MyGame
 
   float4x4 projection;
   void update(const GameState &gs);
+  void draw(const GameState &gs);
 public:
   MyGame();
   ~MyGame();

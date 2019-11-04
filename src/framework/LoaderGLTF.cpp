@@ -59,6 +59,7 @@ GLTFModel::GLTFModel(const char *file)
     ret = loader->LoadASCIIFromFile(&model, &err, &warn, input_filename);
   }
 
+  glGenVertexArrays(1, &vao);
 
   // Buffer
   {
@@ -210,8 +211,12 @@ GLTFModel::GLTFModel(const char *file)
   int scene_to_display = model.defaultScene > -1 ? model.defaultScene : 0;
   const tinygltf::Scene &scene = model.scenes[scene_to_display];
   for (size_t i = 0; i < scene.nodes.size(); i++) {
-    tinygltf::Node &mesh = model.nodes[scene.nodes[i]];
-    meshes.emplace_back(new GLTFMesh(this, scene.nodes[i], mesh.name));
+    tinygltf::Node &node = model.nodes[scene.nodes[i]];
+    assert(node.children.size() == 0); // Multi-nodes is not supported
+    if (node.mesh < 0) continue;
+    // If you need this, you can add recursion here
+    tinygltf::Mesh &mesh = model.meshes[node.mesh];
+    meshes.emplace_back(new GLTFMesh(this, node.mesh, mesh.name));
   }
 }
 
@@ -243,6 +248,8 @@ void GLTFMesh::Draw()
   std::map<int, GLBufferState> &gBufferState = parent->gBufferState;
   GLProgramState &gGLProgramState = parent->gGLProgramState;
 
+  glBindVertexArray(parent->vao);
+
   for (size_t i = 0; i < mesh.primitives.size(); i++) {
     const tinygltf::Primitive &primitive = mesh.primitives[i];
 
@@ -258,7 +265,8 @@ void GLTFMesh::Draw()
     for (; it != itEnd; it++) {
       assert(it->second >= 0);
       const tinygltf::Accessor &accessor = model.accessors[it->second];
-      glBindBuffer(GL_ARRAY_BUFFER, gBufferState[accessor.bufferView].vb);
+      int vb = gBufferState[accessor.bufferView].vb;
+      glBindBuffer(GL_ARRAY_BUFFER, vb);
       GL_CHECK_ERRORS;
       int size = 1;
       if (accessor.type == TINYGLTF_TYPE_SCALAR) {
@@ -334,4 +342,5 @@ void GLTFMesh::Draw()
       }
     }
   }
+  glBindVertexArray(0);
 }

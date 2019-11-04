@@ -31,6 +31,7 @@ class GLTFModel : public Model
   GLProgramState gGLProgramState;
   tinygltf::Model model;
   std::vector<Mesh *> meshes;
+  GLuint vao;
   friend class GLTFMesh;
 public:
   GLTFModel(const char *file);

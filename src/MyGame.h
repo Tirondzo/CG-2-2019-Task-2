@@ -1,7 +1,8 @@
 #pragma once
 
 #include "framework/Game.h"
-#include "framework/Mesh.h"
+#include "framework/Objects3d.h"
+#include "framework/Primitives.h"
 #include "framework/ShaderProgram.h"
 #include "framework/HelperGL.h"
 #include "MyCameras.h"

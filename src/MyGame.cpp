@@ -78,7 +78,7 @@ void MyGame::draw(const GameState &gs)
   tri_sh->StartUseShader();
   tri_sh->SetUniform("projection", projection);
   tri_sh->SetUniform("view", fc->getViewMatrix());
-  triangle->draw();
+  triangle->Draw();
   tri_sh->StopUseShader();
 }
 

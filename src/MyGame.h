@@ -1,7 +1,23 @@
 #pragma once
 
+#include "framework/Game.h"
+#include "framework/Objects3d.h"
+#include "framework/Primitives.h"
+#include "framework/ShaderProgram.h"
+#include "framework/HelperGL.h"
+#include "MyCameras.h"
+typedef ShaderProgram Shader;
+
 class MyGame
 {
+  GameWindow* gw;
+  FreeCamera* fc;
+  Mesh* triangle;
+  Shader* tri_sh;
+
+  float4x4 projection;
+  void update(const GameState &gs);
+  void draw(const GameState &gs);
 public:
   MyGame();
   ~MyGame();

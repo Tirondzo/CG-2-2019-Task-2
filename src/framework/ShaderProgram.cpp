@@ -199,7 +199,9 @@ void ShaderProgram::SetUniform(const std::string &location, const float4x4 &valu
     return;
   }
 
-  glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, value.L());
+  // GL_TRUE means transpose, means that ptr is in row order
+  // https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/row-major-vs-column-major-vector
+  glUniformMatrix4fv(uniformLocation, 1, GL_TRUE, value.L());
   GL_CHECK_ERRORS;
 }
 

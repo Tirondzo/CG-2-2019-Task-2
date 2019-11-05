@@ -13,6 +13,7 @@ void throwGLFWError()
   //int code = glfwGetError(&description);
   //if (description) std::cout << "GLFW Error: " << description << std::endl;
   glfwTerminate();
+  throw "GLFW Exception";
 }
 
 GameWindow::GameWindow(int width, int height, const char *title, bool resizable,
@@ -80,7 +81,7 @@ GLFWmousebuttonfun prevMouseButtonCallback = NULL;
 void keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
   if (current && key != GLFW_KEY_UNKNOWN)
-    current->state.keyboard[key] = (action == GLFW_PRESS);
+    current->state.keyboard[key] = (action != GLFW_RELEASE);
 
   if (prevKeyboardCallback != NULL)
     prevKeyboardCallback(window, key, scancode, action, mode);
@@ -89,7 +90,7 @@ void keyboardCallback(GLFWwindow *window, int key, int scancode, int action, int
 void mouseButtonCallback(GLFWwindow *window, int key, int action, int mods)
 {
   if (current && key != GLFW_KEY_UNKNOWN)
-    current->state.mouse[key] = (action == GLFW_PRESS);
+    current->state.mouse[key] = (action != GLFW_RELEASE);
 
   if (prevMouseButtonCallback != NULL)
     prevMouseButtonCallback(window, key, action, mods);

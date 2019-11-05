@@ -1,7 +1,7 @@
-#include "Mesh.h"
+#include "Primitives.h"
 #include "HelperGL.h"
 
-Mesh *CreateSimpleTriangleMesh(string name)
+PrimitiveMesh *CreateSimpleTriangleMesh(string name)
 {
   vector<float> pos{
       -1, 1, -0.5, 1,
@@ -21,17 +21,17 @@ Mesh *CreateSimpleTriangleMesh(string name)
   vector<uint32_t> ind{
       0, 1, 2};
 
-  return new Mesh(pos, norm, texc, ind, -1, name);
+  return new PrimitiveMesh(pos, norm, texc, ind, -1, name);
 }
 
 
 
-Mesh::Mesh(const vector<float> &positions,
-           const vector<float> &normals,
-           const vector<float> &texcoords,
-           const vector<uint32_t> &indices,
-           size_t mat_id,
-           string n)
+PrimitiveMesh::PrimitiveMesh(const vector<float> &positions,
+                             const vector<float> &normals,
+                             const vector<float> &texcoords,
+                             const vector<uint32_t> &indices,
+                             size_t mat_id,
+                             string n)
 {
   name = n;
 
@@ -73,19 +73,20 @@ Mesh::Mesh(const vector<float> &positions,
   material_id = mat_id;
 }
 
-string Mesh::getName()
+const string &PrimitiveMesh::GetName() const
 {
   return name;
 }
 
-void Mesh::draw()
+void PrimitiveMesh::Draw()
 {
   GL_CHECK( glBindVertexArray(vao) );
   GL_CHECK( glDrawElements(GL_TRIANGLES, ind_num, GL_UNSIGNED_INT, nullptr) );
   GL_CHECK( glBindVertexArray(0) );
 }
 
-Mesh::~Mesh()
+PrimitiveMesh::~PrimitiveMesh()
 {
-  GL_CHECK( glDeleteVertexArrays(1, &vao) );
+  if (vao)
+    GL_CHECK( glDeleteVertexArrays(1, &vao) );
 }

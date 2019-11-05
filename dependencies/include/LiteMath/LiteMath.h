@@ -461,6 +461,27 @@ namespace LiteMath
     return make_float4x4_by_columns(column1, column2, column3, column4);
   }
 
+  static inline float4x4 rotate_angle_axis_4x4(float phi, float3 axis)
+  {
+    float cphi = cos(phi);
+    float sphi = sin(phi);
+    const float4 column1 = make_float4(axis.x*axis.x*(1.-cphi) + cphi,
+                                       axis.x*axis.y*(1.-cphi) + axis.z*sphi,
+                                       axis.x*axis.z*(1.-cphi) - axis.y*sphi,
+                                       0.0f);
+    const float4 column2 = make_float4(axis.y*axis.x*(1.-cphi) - axis.z*sphi,
+                                       axis.y*axis.y*(1.-cphi) + cphi,
+                                       axis.y*axis.z*(1.-cphi) + axis.x*sphi,
+                                       0.0f);
+    const float4 column3 = make_float4(axis.z*axis.x*(1.-cphi) + axis.y*sphi,
+                                       axis.z*axis.y*(1.-cphi) - axis.x*sphi,
+                                       axis.z*axis.z*(1.-cphi) + cphi,
+                                       0.0f);
+    const float4 column4 = make_float4(     0.0f,     0.0f, 0.0f, 1.0f);
+
+    return make_float4x4_by_columns(column1, column2, column3, column4);
+  }
+
   static inline float4x4 inverse4x4(float4x4 m1)
   {
     float tmp[12]; // temp array for pairs

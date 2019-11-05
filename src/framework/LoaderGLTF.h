@@ -38,7 +38,7 @@ public:
   GLTFModel(const GLTFModel&) = delete;
   ~GLTFModel();
 
-  const std::vector<Mesh*> GetMeshes() const override;
+  const std::vector<Mesh*> &GetMeshes() const override;
   void Draw() override;
 };
 
@@ -47,10 +47,13 @@ class GLTFMesh : public Mesh
   GLTFModel *parent;
   int mesh_id;
   std::string name;
-  GLTFMesh(GLTFModel *parent, int mesh_id, std::string name) : parent(parent), mesh_id(mesh_id), name(name) {}
+  float4x4 mat;
+  GLTFMesh(GLTFModel *parent, int mesh_id, std::string name, float4x4 m) :
+           parent(parent), mesh_id(mesh_id), name(name), mat(m) {}
   friend GLTFModel;
 public:
   GLTFMesh(const GLTFMesh&) = delete;
   const std::string &GetName() const override { return name; };
+  const float4x4 &GetTransform() const override { return mat; };
   void Draw() override;
 };

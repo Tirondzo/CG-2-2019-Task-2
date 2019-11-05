@@ -9,6 +9,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <TinyGLTF/tiny_gltf.h>
 
+#include <LiteMath.h>
+using namespace LiteMath;
+
 std::unique_ptr<tinygltf::TinyGLTF> loader;
 
 // Based on this example
@@ -74,7 +77,7 @@ GLTFModel::GLTFModel(const char *file)
       for (size_t a_i = 0; a_i < model.accessors.size(); ++a_i) {
         const auto &accessor = model.accessors[a_i];
         if (accessor.bufferView == i) {
-          std::cout << i << " is used by accessor " << a_i << std::endl;
+          // std::cout << i << " is used by accessor " << a_i << std::endl;
           if (accessor.sparse.isSparse) {
             std::cout
                 << "WARN: this bufferView has at least one sparse accessor to "
@@ -91,8 +94,8 @@ GLTFModel::GLTFModel(const char *file)
       GLBufferState state;
       glGenBuffers(1, &state.vb);
       glBindBuffer(bufferView.target, state.vb);
-      std::cout << "buffer.size= " << buffer.data.size()
-                << ", byteOffset = " << bufferView.byteOffset << std::endl;
+      // std::cout << "buffer.size= " << buffer.data.size()
+      //          << ", byteOffset = " << bufferView.byteOffset << std::endl;
 
       if (sparse_accessor < 0)
         glBufferData(bufferView.target, bufferView.byteLength,
@@ -213,10 +216,35 @@ GLTFModel::GLTFModel(const char *file)
   for (size_t i = 0; i < scene.nodes.size(); i++) {
     tinygltf::Node &node = model.nodes[scene.nodes[i]];
     assert(node.children.size() == 0); // Multi-nodes is not supported
-    if (node.mesh < 0) continue;
     // If you need this, you can add recursion here
+    if (node.mesh < 0) continue;
+
+    float4x4 model_m;
+    if (node.matrix.size() == 16) {
+      // Use `matrix' attribute
+      std::vector<float> mat(node.matrix.begin(), node.matrix.end());
+      model_m = float4x4(mat.data());
+      model_m = transpose(model_m); // convert column-based to row-based
+    } else {
+      // Assume Trans x Rotate x Scale order
+      if (node.scale.size() == 3) {
+        model_m = mul(model_m, scale4x4(float3(node.scale[0], node.scale[1], node.scale[2])));
+      }
+
+      if (node.rotation.size() == 4) {
+        float4x4 mr = rotate_angle_axis_4x4(node.rotation[0],
+                                            float3(node.rotation[1], node.rotation[2], node.rotation[3]));
+        model_m = mul(model_m, mr);
+      }
+
+      if (node.translation.size() == 3) {
+        model_m = mul(model_m,
+                      translate4x4(float3(node.translation[0], node.translation[1], node.translation[2])));
+      }
+    }
+
     tinygltf::Mesh &mesh = model.meshes[node.mesh];
-    meshes.emplace_back(new GLTFMesh(this, node.mesh, mesh.name));
+    meshes.emplace_back(new GLTFMesh(this, node.mesh, mesh.name, model_m));
   }
 }
 
@@ -233,7 +261,7 @@ GLTFModel::~GLTFModel()
   meshes.clear();
 }
 
-const std::vector<Mesh *> GLTFModel::GetMeshes() const
+const std::vector<Mesh *> &GLTFModel::GetMeshes() const
 {
   return meshes;
 }

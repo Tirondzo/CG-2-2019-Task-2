@@ -3,10 +3,7 @@
 #include <memory>
 #include <iostream>
 #include <cassert>
-
-#define TINYGLTF_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <algorithm>
 #include <TinyGLTF/tiny_gltf.h>
 
 #include <LiteMath.h>

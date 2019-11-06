@@ -48,9 +48,14 @@ set(ADDITIONAL_RUNTIME_LIBRARY_DIRS dependencies/bin)
 
 # Compile additional libraries from sources
 
-set(COMPILED_LIBRARIES Hydra TinyXML2 GLAD)
+set(COMPILED_LIBRARIES
+    Hydra
+    TinyXML2
+    TinyGLTF
+    GLAD)
 add_subdirectory(dependencies/include/Hydra)
 add_subdirectory(dependencies/include/TinyXML2)
+add_subdirectory(dependencies/include/TinyGLTF)
 add_subdirectory(dependencies/include/GLAD)
 
 if(WIN32)

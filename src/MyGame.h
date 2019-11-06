@@ -12,8 +12,11 @@ class MyGame
 {
   GameWindow* gw;
   FreeCamera* fc;
+  TankCamera* tc;
+  Camera* my_cam;
   Mesh* triangle;
   Shader* tri_sh;
+  Model* my_tank;
 
   float4x4 projection;
   void update(const GameState &gs);

@@ -44,3 +44,27 @@ void FreeCamera::update(const GameState &gs)
 
   this->setPos(pos + deltaPos);
 }
+
+void TankCamera::update()
+{
+  // Arcball camera
+  float4x4 view = mul(rotate_Y_4x4(-this->yaw_pitch_roll.x - M_PI_2), translate4x4(pos));
+  view = mul(translate4x4(delta), view);
+  // inverse of orthonormal matrix with additional translate column
+  float4 col4 = view.get_col(3);
+  view.set_col(3, float4(-col4.x,-col4.y,-col4.z,col4.w));
+  this->viewMatrix = transpose3x3(view);
+}
+
+void TankCamera::update(const GameState &gs)
+{
+  if (!gs.cursorCaptured || !gs.prev.cursorCaptured)
+    return;
+
+  double dyaw = gs.mouseX - gs.prev.mouseX;
+  if (dyaw == 0.0) return;
+  const double sensitive = 0.0125;
+
+  this->yaw_pitch_roll.x += dyaw*sensitive;
+  update();
+}

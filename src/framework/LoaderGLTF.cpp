@@ -58,6 +58,8 @@ GLTFModel::GLTFModel(const char *file)
     // assume ascii glTF.
     ret = loader->LoadASCIIFromFile(&model, &err, &warn, input_filename);
   }
+  if (err.size()) std::cout << "Errors: " << err << std::endl;
+  if (warn.size()) std::cout << "Warnings: " << warn << std::endl;
 
   glGenVertexArrays(1, &vao);
 
@@ -242,6 +244,66 @@ GLTFModel::GLTFModel(const char *file)
 
     tinygltf::Mesh &mesh = model.meshes[node.mesh];
     meshes.emplace_back(new GLTFMesh(this, node.mesh, mesh.name, model_m));
+
+    // Gen textures
+
+    gMeshState[mesh.name].diffuseTex.resize(mesh.primitives.size());
+    for (size_t primId = 0; primId < mesh.primitives.size(); primId++) {
+      const tinygltf::Primitive &primitive = mesh.primitives[primId];
+
+      gMeshState[mesh.name].diffuseTex[primId] = 0;
+
+      if (primitive.material < 0) {
+        continue;
+      }
+      tinygltf::Material &mat = model.materials[primitive.material];
+      int d_tex_id = mat.pbrMetallicRoughness.baseColorTexture.index;
+      if (d_tex_id != -1) {
+        const tinygltf::Texture &tex = model.textures[d_tex_id];
+        tinygltf::Image &image = model.images[tex.source];
+        tinygltf::Sampler &sampler = model.samplers[tex.sampler];
+        if (image.width == -1 || image.height == -1)
+        {
+          std::cout << "WARN: Image: '" << image.uri << "' is not loaded." << std::endl;;
+          continue;
+        }
+
+        GLuint texId;
+        GLenum target = GL_TEXTURE_2D;
+        GL_CHECK(glGenTextures(1, &texId));
+        GL_CHECK(glBindTexture(target, texId));
+        GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+        GL_CHECK(glTexParameterf(target, GL_TEXTURE_MIN_FILTER, sampler.minFilter));
+        GL_CHECK(glTexParameterf(target, GL_TEXTURE_MAG_FILTER, sampler.magFilter));
+        GL_CHECK(glTexParameteri(target, GL_TEXTURE_WRAP_S, sampler.wrapS));
+        GL_CHECK(glTexParameteri(target, GL_TEXTURE_WRAP_T, sampler.wrapT));
+
+        GLenum format = GL_RGBA;
+        if (image.component == 1) {
+          format = GL_RED;
+        } else if (image.component == 2) {
+          format = GL_RG;
+        } else if (image.component == 3) {
+          format = GL_RGB;
+        } else {
+          // ???
+        }
+
+        GLenum type = GL_UNSIGNED_BYTE;
+        if (image.bits == 8) {
+          // ok
+        } else if (image.bits == 16) {
+          type = GL_UNSIGNED_SHORT;
+        } else {
+          // ???
+        }
+        GL_CHECK(glTexImage2D(target, 0, GL_RGBA, image.width, image.height, 0, format, type, &image.image.at(0)));
+        GL_CHECK(glGenerateMipmap(target));
+        GL_CHECK(glBindTexture(target, 0));
+
+        gMeshState[mesh.name].diffuseTex[primId] = texId;
+      }
+    }
   }
 }
 
@@ -281,7 +343,20 @@ void GLTFMesh::Draw()
     if (primitive.indices < 0) return;
 
     // Assume TEXTURE_2D target for the texture object.
-    // glBindTexture(GL_TEXTURE_2D, gMeshState[mesh.name].diffuseTex[i]);
+    GLint cur_program;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &cur_program);
+    assert(cur_program != 0); // Use draw method only after setup the shader
+    // ... StartUseShader ...
+    // Draw()
+    // ... StopUseShader ...
+
+    GLint diffuse_tex_loc = glGetUniformLocation(cur_program, "diffuse_tex");
+    if (diffuse_tex_loc != -1)
+    {
+      glUniform1i(diffuse_tex_loc, 0);
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, parent->gMeshState[mesh.name].diffuseTex[i]);
+    }
 
     std::map<std::string, int>::const_iterator it(primitive.attributes.begin());
     std::map<std::string, int>::const_iterator itEnd(

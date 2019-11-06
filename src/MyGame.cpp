@@ -108,7 +108,10 @@ void MyGame::draw(const GameState &gs)
   tri_sh->SetUniform("view", my_cam->getViewMatrix());
   for (Mesh* m : my_tank->GetMeshes())
   {
-    tri_sh->SetUniform("model", m->GetTransform());
+    float4x4 mt = m->GetTransform();
+    if (m->GetName() == "Head")
+      mt = mul(mt, rotate_Y_4x4(tc->getYPR().x));
+    tri_sh->SetUniform("model", mt);
     m->Draw();
   }
   tri_sh->StopUseShader();

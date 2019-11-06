@@ -12,7 +12,7 @@ void FreeCamera::update(const GameState &gs)
   const double sensitive = 0.0125;
 
   float3 pos = this->getPos();
-  this->rotateYPR(float3(dyaw, dpitch, 0.0f) * sensitive);
+  this->rotateYPR(float3(-dyaw, -dpitch, 0.0f) * sensitive);
 
   double deltaTime = gs.gameTime - gs.prev.gameTime;
   double speed = 1.0 + (gs.keyboard[GLFW_KEY_LEFT_SHIFT]-gs.keyboard[GLFW_KEY_LEFT_CONTROL])*.9f;
@@ -48,7 +48,7 @@ void FreeCamera::update(const GameState &gs)
 void TankCamera::update()
 {
   // Arcball camera
-  float4x4 view = mul(rotate_Y_4x4(-this->yaw_pitch_roll.x - M_PI_2), translate4x4(pos));
+  float4x4 view = mul(rotate_Y_4x4(this->yaw_pitch_roll.x - M_PI_2), translate4x4(pos));
   view = mul(translate4x4(delta), view);
   // inverse of orthonormal matrix with additional translate column
   float4 col4 = view.get_col(3);
@@ -65,6 +65,6 @@ void TankCamera::update(const GameState &gs)
   if (dyaw == 0.0) return;
   const double sensitive = 0.0125;
 
-  this->yaw_pitch_roll.x += dyaw*sensitive;
+  this->yaw_pitch_roll.x += -dyaw*sensitive;
   update();
 }

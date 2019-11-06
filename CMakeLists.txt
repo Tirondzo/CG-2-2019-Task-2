@@ -3,6 +3,9 @@ project(main)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# Debug mode allows you to use gdb, lldb and other debuggers
+set(CMAKE_BUILD_TYPE Debug)
+
 
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src")
 set(SHADERS_DIR "${PROJECT_SOURCE_DIR}/shaders")

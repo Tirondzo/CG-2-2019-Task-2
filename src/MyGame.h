@@ -10,10 +10,23 @@ typedef ShaderProgram Shader;
 
 class MyGame
 {
+  // feel free to
+  // improve this
   GameWindow* gw;
   FreeCamera* fc;
+  TankCamera* tc;
   Mesh* triangle;
-  Shader* tri_sh;
+  Mesh* box_targ;
+  Mesh* plane_gr;
+  Model* my_tank;
+  Shader* grid_s;
+  Shader* simp_s;
+  Shader* targ_s;
+  Shader* tank_s;
+  // links to res
+  Camera* my_cam;
+
+  // you can use smart pointers for the code above
 
   float4x4 projection;
   void update(const GameState &gs);

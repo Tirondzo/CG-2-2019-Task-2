@@ -23,7 +23,7 @@ Camera& GimbalCamera::rotateYPR(float yaw, float pitch, float roll)
   yaw_pitch_roll.y = clamp(yaw_pitch_roll.y, -M_PI_2, M_PI_2);
 
   float3 prev_pos = getPos();
-  float4x4 view_matrix = (mul(rotate_Y_4x4(-yaw_pitch_roll.x), rotate_X_4x4(-yaw_pitch_roll.y)));
+  float4x4 view_matrix = (mul(rotate_Y_4x4(yaw_pitch_roll.x), rotate_X_4x4(yaw_pitch_roll.y)));
   view_matrix = (mul(rotate_Z_4x4(yaw_pitch_roll.z), view_matrix));
   view_matrix = transpose(view_matrix);
 

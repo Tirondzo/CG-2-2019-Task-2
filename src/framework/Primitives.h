@@ -17,6 +17,8 @@ protected:
   string name;
   GLuint vboVertices, vboIndices, vboNormals, vboTexCoords, vao;
   size_t ind_num;
+  size_t pos_num;
+  size_t tc_dim;
 
 public:
   float4x4 model;
@@ -27,14 +29,18 @@ public:
                 const vector<float> &normals,
                 const vector<float> &texcoords,
                 const vector<uint32_t> &indices,
+                size_t tex_cords_dim,
                 size_t mat_id,
                 string n);
 
   const string &GetName() const override;
 
   void Draw() override;
+  void DrawInstanced(size_t count) override;
 
   ~PrimitiveMesh();
 };
 
 PrimitiveMesh* CreateSimpleTriangleMesh(string name = "SimpleTriangle");
+PrimitiveMesh* CreateSimplePlaneMesh(string name = "SimplePlane");
+PrimitiveMesh* CreateSimpleBoxMesh(string name = "SimpleBox");

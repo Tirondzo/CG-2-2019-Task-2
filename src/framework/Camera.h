@@ -16,8 +16,8 @@ public:
          float3 world_right = float3(1,0,0),
          float3 world_front = float3(0,0,1));
 
-  float3 getPos() const;
-  Camera& setPos(float3 val);
+  virtual float3 getPos() const;
+  virtual Camera& setPos(float3 val);
 
   virtual Camera& rotateYPR(float yaw, float pitch, float roll) = 0;
   Camera& rotateYPR(float3 ypr) { return this->rotateYPR(ypr.x, ypr.y, ypr.z); }

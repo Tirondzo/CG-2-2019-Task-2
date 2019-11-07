@@ -7,7 +7,6 @@
 // Main Game Logic and so on
 
 
-
 MyGame::MyGame()
 {
   gw = new GameWindow(800, 600, "CG/2 Task 2. 2019");
@@ -51,9 +50,9 @@ MyGame::MyGame()
   if (it != my_tank->GetMeshes().end())
     tc->setPos(to_float3((*it)->GetTransform().get_col(3))); // set camera to tank Head pos
 
-  // Create projection matrix
-  projection = projectionMatrixTransposed(60.0, double(gw->getViewWidth())/gw->getViewHeight(), 0.1, 1000.0);
-  projection = transpose(projection);
+  // [TASK] Create projection matrix here and store it in 'projection' variable
+  // [HELP] ratio is double(gw->getViewWidth())/gw->getViewHeight()
+
 
   // Init all resources at cetera...
 }
@@ -122,6 +121,8 @@ void MyGame::update(const GameState &gs)
   my_cam->update(gs);
 }
 
+#define SHADER_ZONE(shader) ShaderZone ShaderZoneGuardName ## __LINE__(this, shader);
+
 void MyGame::draw(const GameState &gs)
 {
   glClearColor(0.1f, 0.6f, 0.8f, 1.0f);
@@ -129,30 +130,58 @@ void MyGame::draw(const GameState &gs)
 
   float4x4 view = my_cam->getViewMatrix();
 
-  grid_s->StartUseShader();
-  grid_s->SetUniform("projection", projection);
-  grid_s->SetUniform("view", view);
-  plane_gr->Draw();
-  grid_s->StopUseShader();
-
-  targ_s->StartUseShader();
-  targ_s->SetUniform("projection", projection);
-  targ_s->SetUniform("view", view);
-  box_targ->DrawInstanced(5);
-  targ_s->StopUseShader();
-
-  tank_s->StartUseShader();
-  tank_s->SetUniform("projection", projection);
-  tank_s->SetUniform("view", view);
-  for (Mesh* m : my_tank->GetMeshes())
   {
-    float4x4 mt = m->GetTransform();
-    if (m->GetName() == "Head")
-      mt = mul(mt, rotate_Y_4x4(tc->getYPR().x));
-    tank_s->SetUniform("model", mt);
-    m->Draw();
+    SHADER_ZONE(simp_s);
+    // [TASK] Draw triangle here
+
   }
-  tank_s->StopUseShader();
+
+  {
+    SHADER_ZONE(grid_s);
+    // [TASK] Draw plane_gr here
+
+  }
+
+  {
+    SHADER_ZONE(targ_s);
+    // [TASK] Draw Instanced box_targ here
+
+  }
+
+  {
+    SHADER_ZONE(tank_s);
+    for (Mesh* m : my_tank->GetMeshes())
+    {
+      // [TASK] Set model transform here
+      // [HELP] m->GetTransform() gets local transform
+
+      // [TASK] Set cannon rotation here
+      // [HELP] m->GetName() gets mesh name
+      // [HELP] tc->getYPR().x gets tank camera Yaw angle
+      // [HELP] rotate_Y_4x4 calculates rotation matrix around Y axis
+
+      // [HELP] tank_s->SetUniform("model", ...); sets model matrix transform
+
+      // [TASK] Draw Mesh here
+
+    }
+  }
+
+}
+
+// Shader Zone helper
+MyGame::ShaderZone::ShaderZone(MyGame *g, Shader *shader) : shader(shader), parent(g)
+{
+  shader->StartUseShader();
+  // [TASK] Set parent->projection matrix here
+
+  // [TASK] Set parent->my_cam->getViewMatrix() here
+
+}
+
+MyGame::ShaderZone::~ShaderZone()
+{
+  shader->StopUseShader();
 }
 
 

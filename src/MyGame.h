@@ -28,6 +28,15 @@ class MyGame
 
   // you can use smart pointers for the code above
 
+  class ShaderZone //Simple scope guard
+  {
+    MyGame *parent;
+    Shader *shader;
+  public:
+    ShaderZone(MyGame* g, Shader* shader);
+    ~ShaderZone();
+  };
+
   float4x4 projection;
   void update(const GameState &gs);
   void draw(const GameState &gs);

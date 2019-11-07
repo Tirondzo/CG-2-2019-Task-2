@@ -8,6 +8,8 @@ uniform sampler2D diffuse_tex;
 
 void main()
 {
-  vec4 c = texture(diffuse_tex, vTexCoords);
-  color = vec4(c.rgb, 1.0f);
+  vec3 c = vec3(1);
+  // [TASK] add textures
+  // [HELP] look at texture method, diffuse_tex and vTexCoords
+  color = vec4(c, 1.0f);
 }

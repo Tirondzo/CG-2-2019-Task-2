@@ -9,13 +9,14 @@ out vec3 vNormal;
 
 uniform mat4 projection = mat4(1);
 uniform mat4 view = mat4(1);
-uniform mat4 model = mat4(1);
+// [TASK] Add model matrix here
 
 void main()
 {
   gl_Position = vec4(vertex, 1.0f);
 
-  // Передает текстурные координаты дальше в Fragment шейдер
+  // Pass texture coords next to fragment shader
   vTexCoords = texCoords;
-  gl_Position = projection*view*model*gl_Position;
+  // [TASK] Use model matrix
+  gl_Position = projection*view*gl_Position;
 }

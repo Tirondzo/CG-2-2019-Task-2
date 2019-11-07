@@ -1,5 +1,8 @@
 # CG/2 Course Task 2
 
+https://github.com/Tirondzo/CG-2-2019-Task-2  
+[Task file](task/TASK-RU.md)
+
 ## Requirements
  - C++ Compiler
  - CMake
